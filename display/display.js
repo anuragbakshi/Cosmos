@@ -1,4 +1,3 @@
-var EPSILON = 1e-6;
 var EJECTION_VELOCITY = 0.2;
 
 var connection = new autobahn.Connection({
@@ -45,10 +44,8 @@ connection.onopen = function(session, details) {
 
 			var ejectedMass = vec2.mag(eventObject.impulse) / EJECTION_VELOCITY;
 
-			// var cellMomentum = c.mass * vec2.mag(c.velocity);
 			c.mass -= ejectedMass;
 			c.velocity = vec2.add(c.velocity, vec2.scl(eventObject.impulse, 1 / c.mass));
-			// console.log(c.velocity);
 
 			console.log(vec2.add(c.position, vec2.scl(vec2.norm(eventObject.impulse), -r)));
 			cells[cellUIDCounter] = {
@@ -80,14 +77,9 @@ function sketchMain(pjs) {
 		var dt = time - lastFrame;
 		lastFrame = time;
 
-		// dt /= 5;
-
-		// console.log("FPS: " + 1000 / dt);
-
 		pjs.background(200);
 		pjs.fill(100);
 
-		// console.log(Object.keys(cells).length);
 		var uids = Object.keys(cells);
 		for(var i = 0; i < uids.length; i++) {
 			var c = cells[uids[i]];
@@ -111,53 +103,48 @@ function sketchMain(pjs) {
 				c.position[1] = Math.max(r, Math.min(c.position[1], pjs.height - r));
 			}
 
+			// handle collisions
 			for(var j = i + 1; j < uids.length; j++) {
 				var c2 = cells[uids[j]];
 				if(c2.dead) {
 					continue;
 				}
 
-				var r2 = Math.sqrt(c2.mass);
+				var cSmall, cLarge;
+				if(c.mass < c2.mass) {
+					cSmall = c;
+					cLarge = c2;
+				} else {
+					cSmall = c2;
+					cLarge = c;
+				}
 
-				// check for collision
-				var d = vec2.mag(vec2.sub(c.position, c2.position));
-				if(d < r + r2) {
+				var rSmall = Math.sqrt(cSmall.mass);
+				var rLarge = Math.sqrt(cLarge.mass);
+
+				var d = vec2.mag(vec2.sub(cSmall.position, cLarge.position));
+
+				if(d < rSmall + rLarge) {		// some collision
 					var dm;
-					if(d > Math.max(r, r2)) {
-						dm = (d * Math.sqrt(-d * d + 2 * (c.mass + c2.mass)) + Math.min(c.mass, c2.mass) - Math.max(c.mass, c2.mass)) / 2;
-					} else {
-						dm = Math.min(c.mass, c2.mass)
+
+					if(d < rLarge) {			// full absorbtion
+						dm = cSmall.mass;
+						cSmall.dead = true;
+					} else {					// partial absorbtion
+						dm = (d * Math.sqrt(2 * (cSmall.mass + cLarge.mass) - d * d) + cSmall.mass - cLarge.mass) / 2;
 					}
 
-					if(c.mass < c2.mass) {
-						var impartedMomentum = vec2.scl(c.velocity, dm);
-						var momentum = vec2.sub(vec2.scl(c.velocity, c.mass), impartedMomentum);
-						var momentum2 = vec2.add(vec2.scl(c2.velocity, c2.mass), impartedMomentum);
+					// calculate momentum transferred (impulse)
+					var pSmall = vec2.scl(cSmall.velocity, cSmall.mass);
+					var pLarge = vec2.scl(cLarge.velocity, cLarge.mass);
 
-						c.mass -= dm;
-						c2.mass += dm;
+					var dp = vec2.scl(cSmall.velocity, dm);
 
-						c.velocity = vec2.scl(momentum, 1 / c.mass);
-						c2.velocity = vec2.scl(momentum2, 1 / c2.mass);
-					} else {
-						var impartedMomentum = vec2.scl(c2.velocity, dm);
-						var momentum = vec2.add(vec2.scl(c.velocity, c.mass), impartedMomentum);
-						var momentum2 = vec2.sub(vec2.scl(c2.velocity, c2.mass), impartedMomentum);
+					cSmall.mass -= dm;
+					cLarge.mass += dm;
 
-						c.mass += dm;
-						c2.mass -= dm;
-
-						c.velocity = vec2.scl(momentum, 1 / c.mass);
-						c2.velocity = vec2.scl(momentum2, 1 / c2.mass);
-					}
-
-					if(c.mass <= EPSILON) {
-						c.dead = true;
-					}
-
-					if(c2.mass <= EPSILON) {
-						c2.dead = true;
-					}
+					cSmall.velocity = vec2.scl(vec2.sub(pSmall, dp), 1 / cSmall.mass);
+					cLarge.velocity = vec2.scl(vec2.add(pLarge, dp), 1 / cLarge.mass);
 				}
 			}
 
