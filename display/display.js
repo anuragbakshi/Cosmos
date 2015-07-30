@@ -1,5 +1,11 @@
 var EJECTION_VELOCITY = 0.2;
 
+var stats = new Stats();
+stats.setMode(0);
+
+$("body").append(stats.domElement);
+console.log(stats.update.toString());
+
 var connection = new autobahn.Connection({
 	url: "ws://anurags-mac:8080/ws",
 	realm: "realm1"
@@ -73,6 +79,8 @@ function sketchMain(pjs) {
 	};
 
 	pjs.draw = function() {
+		stats.begin();
+
 		var time = Date.now();
 		var dt = time - lastFrame;
 		lastFrame = time;
@@ -156,6 +164,8 @@ function sketchMain(pjs) {
 				delete cells[uids[i]];
 			}
 		}
+
+		stats.end();
 	};
 }
 
