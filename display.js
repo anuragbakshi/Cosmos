@@ -80,7 +80,7 @@ function sketchMain(pjs) {
 		var dt = time - lastFrame;
 		lastFrame = time;
 
-		dt /= 5;
+		// dt /= 5;
 
 		// console.log("FPS: " + 1000 / dt);
 
@@ -130,11 +130,25 @@ function sketchMain(pjs) {
 					}
 
 					if(c.mass < c2.mass) {
+						var impartedMomentum = vec2.scl(c.velocity, dm);
+						var momentum = vec2.sub(vec2.scl(c.velocity, c.mass), impartedMomentum);
+						var momentum2 = vec2.add(vec2.scl(c2.velocity, c2.mass), impartedMomentum);
+
 						c.mass -= dm;
 						c2.mass += dm;
+
+						c.velocity = vec2.scl(momentum, 1 / c.mass);
+						c2.velocity = vec2.scl(momentum2, 1 / c2.mass);
 					} else {
+						var impartedMomentum = vec2.scl(c2.velocity, dm);
+						var momentum = vec2.add(vec2.scl(c.velocity, c.mass), impartedMomentum);
+						var momentum2 = vec2.sub(vec2.scl(c2.velocity, c2.mass), impartedMomentum);
+
 						c.mass += dm;
 						c2.mass -= dm;
+
+						c.velocity = vec2.scl(momentum, 1 / c.mass);
+						c2.velocity = vec2.scl(momentum2, 1 / c2.mass);
 					}
 
 					if(c.mass <= EPSILON) {
