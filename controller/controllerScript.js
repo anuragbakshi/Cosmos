@@ -8,14 +8,13 @@ var swipe = new Hammer.Swipe();
 hammer.add([tap,swipe]);
 
 var con = new autobahn.Connection({
-	url:"ws://anurags-mac:8080/ws",
+	url:"ws://192.168.0.108:8080/ws",
 	realm:"realm1"
 });
 
 con.onopen = function(ses,det){
 
-	var connected = false;
-	var uid =  Math.floor(Math.random()*UID_SIZE);
+	var uid = 0;
 
 	function resizeCanvas(){
 		$('#gesture').show().attr({width:$(window).width(),height:$(window).height()});
@@ -24,23 +23,20 @@ con.onopen = function(ses,det){
 //		console.log($(window).height() + ' == ' + $('#gesture').height());
 	}
 
-	ses.subscribe('entry',function(arr,obj){
-		if(connected)return;
+	function tryToJoin(){
+		ses.call('cosmos.directory.join',$('#name').val(),$('#color').val()).then(
+			function(gotUid){
+				uid = gotUid;
+				$('#entry').hide();
+				resizeCanvas();
+			},
+			function(err){
+				console.log(err);
+				tryToJoin();
+			});
+	}
 
-		connected = obj.desc == 'joined' && obj.uid == uid;
-
-		if(connected){
-			$('#entry').hide();
-			resizeCanvas();
-		}
-	});
-
-	//$('#submit').on('click',function(){
-		ses.publish('entry',[],{
-			desc: "entering",
-			uid: uid,
-			name:$('#name').val()});
-	//});
+	$('#submit').on('click',tryToJoin);
 
 	$('#gesture').hide();
 
@@ -55,6 +51,8 @@ con.onopen = function(ses,det){
 
 		var canvas = document.getElementById('gesture').getContext('2d');
 		canvas.clearRect(0,0,$(window).width(),$(window).height());
+		canvas.fillStyle = $('#color').val();
+		canvas.fillRect(0,0,$(window).width(),$(window).height())
 		canvas.beginPath();
 		canvas.moveTo($('#gesture').width()/2,$('#gesture').height()/2);
 		//canvas.lineWidth = 2;

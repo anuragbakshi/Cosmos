@@ -6,7 +6,7 @@ stats.setMode(0);
 $("body").append(stats.domElement);
 
 var connection = new autobahn.Connection({
-	url: "ws://anurags-mac:8080/ws",
+	url: "ws://192.168.0.108:8080/ws",
 	realm: "realm1"
 });
 
