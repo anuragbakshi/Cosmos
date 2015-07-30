@@ -4,7 +4,7 @@ stats.setMode(0);
 $("body").append(stats.domElement);
 
 var connection = new autobahn.Connection({
-	url: "ws://192.168.1.2:8080/ws",
+	url: "ws://cosmos:8080/ws",
 	realm: "realm1"
 });
 
