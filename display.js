@@ -123,6 +123,7 @@ function sketchMain(pjs) {
 				var d = vec2.mag(vec2.sub(c.position, c2.position));
 				if(d < r + r2) {
 					var dm = (d * Math.sqrt(-d * d + 2 * (c.mass + c2.mass)) + Math.min(c.mass, c2.mass) - Math.max(c.mass, c2.mass)) / 2;
+					dm = (dm < 0)? -dm:dm;
 					dm = Math.min(c.mass, c2.mass, dm);
 					if(c.mass < c2.mass) {
 						c.mass -= dm;
