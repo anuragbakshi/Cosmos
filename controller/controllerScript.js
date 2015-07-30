@@ -8,13 +8,13 @@ var swipe = new Hammer.Swipe();
 hammer.add([tap,swipe]);
 
 var con = new autobahn.Connection({
-	url:"ws://192.168.0.108:8080/ws",
+	url:"ws://192.168.1.2:8080/ws",
 	realm:"realm1"
 });
 
 con.onopen = function(ses,det){
 
-	var uid = 0;
+	var uid;
 
 	function resizeCanvas(){
 		$('#gesture').show().attr({width:$(window).width(),height:$(window).height()});
@@ -24,8 +24,12 @@ con.onopen = function(ses,det){
 	}
 
 	function tryToJoin(){
-		ses.call('cosmos.directory.join',$('#name').val(),$('#color').val()).then(
+		ses.call('cosmos.directory.join', [], {
+			name: $('#name').val(),
+			color: $('#color').val()
+		}).then(
 			function(gotUid){
+				console.log(gotUid);
 				uid = gotUid;
 				$('#entry').hide();
 				resizeCanvas();
@@ -33,7 +37,8 @@ con.onopen = function(ses,det){
 			function(err){
 				console.log(err);
 				tryToJoin();
-			});
+			}
+		);
 	}
 
 	$('#submit').on('click',tryToJoin);
