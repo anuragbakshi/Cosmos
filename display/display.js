@@ -1,5 +1,10 @@
-var EPSILON = 1e-6;
 var EJECTION_VELOCITY = 0.2;
+
+var stats = new Stats();
+stats.setMode(0);
+
+$("body").append(stats.domElement);
+console.log(stats.update.toString());
 
 var connection = new autobahn.Connection({
 	url: "ws://anurags-mac:8080/ws",
@@ -45,10 +50,8 @@ connection.onopen = function(session, details) {
 
 			var ejectedMass = vec2.mag(eventObject.impulse) / EJECTION_VELOCITY;
 
-			// var cellMomentum = c.mass * vec2.mag(c.velocity);
 			c.mass -= ejectedMass;
 			c.velocity = vec2.add(c.velocity, vec2.scl(eventObject.impulse, 1 / c.mass));
-			// console.log(c.velocity);
 
 			console.log(vec2.add(c.position, vec2.scl(vec2.norm(eventObject.impulse), -r)));
 			cells[cellUIDCounter] = {
@@ -76,18 +79,15 @@ function sketchMain(pjs) {
 	};
 
 	pjs.draw = function() {
+		stats.begin();
+
 		var time = Date.now();
 		var dt = time - lastFrame;
 		lastFrame = time;
 
-		dt /= 5;
-
-		// console.log("FPS: " + 1000 / dt);
-
 		pjs.background(200);
 		pjs.fill(100);
 
-		// console.log(Object.keys(cells).length);
 		var uids = Object.keys(cells);
 		for(var i = 0; i < uids.length; i++) {
 			var c = cells[uids[i]];
@@ -111,6 +111,7 @@ function sketchMain(pjs) {
 				c.position[1] = Math.max(r, Math.min(c.position[1], pjs.height - r));
 			}
 
+			// handle collisions
 			for(var j = i + 1; j < uids.length; j++) {
 				var c2 = cells[uids[j]];
 				if(c2.dead) {
@@ -133,13 +134,41 @@ function sketchMain(pjs) {
 						c2.mass -= dm;
 					}
 
-					if(c.mass <= EPSILON) {
-						c.dead = true;
+				var cSmall, cLarge;
+				if(c.mass < c2.mass) {
+					cSmall = c;
+					cLarge = c2;
+				} else {
+					cSmall = c2;
+					cLarge = c;
+				}
+
+				var rSmall = Math.sqrt(cSmall.mass);
+				var rLarge = Math.sqrt(cLarge.mass);
+
+				var d = vec2.mag(vec2.sub(cSmall.position, cLarge.position));
+
+				if(d < rSmall + rLarge) {		// some collision
+					var dm;
+
+					if(d < rLarge) {			// full absorbtion
+						dm = cSmall.mass;
+						cSmall.dead = true;
+					} else {					// partial absorbtion
+						dm = (d * Math.sqrt(2 * (cSmall.mass + cLarge.mass) - d * d) + cSmall.mass - cLarge.mass) / 2;
 					}
 
-					if(c2.mass <= EPSILON) {
-						c2.dead = true;
-					}
+					// calculate momentum transferred (impulse)
+					var pSmall = vec2.scl(cSmall.velocity, cSmall.mass);
+					var pLarge = vec2.scl(cLarge.velocity, cLarge.mass);
+
+					var dp = vec2.scl(cSmall.velocity, dm);
+
+					cSmall.mass -= dm;
+					cLarge.mass += dm;
+
+					cSmall.velocity = vec2.scl(vec2.sub(pSmall, dp), 1 / cSmall.mass);
+					cLarge.velocity = vec2.scl(vec2.add(pLarge, dp), 1 / cLarge.mass);
 				}
 			}
 
@@ -151,6 +180,8 @@ function sketchMain(pjs) {
 				delete cells[uids[i]];
 			}
 		}
+
+		stats.end();
 	};
 }
 
