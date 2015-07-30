@@ -23,6 +23,20 @@ con.onopen = function(ses,det){
 //		console.log($(window).height() + ' == ' + $('#gesture').height());
 	}
 
+	function negateColor(hexVal){
+		var HEX_VALS = "0123456789ABCDEF"
+
+		var r = 255 - parseInt(hexVal.substring(1,3),16);
+		var g = 255 - parseInt(hexVal.substring(3,5),16);
+		var b = 255 - parseInt(hexVal.substring(5),16);
+
+		var toRet = '#' + HEX_VALS[Math.floor(r/16)] + HEX_VALS[r % 16];
+		toRet += HEX_VALS[Math.floor(b/16)] + HEX_VALS[b % 16];
+		toRet += HEX_VALS[Math.floor(g/16)] + HEX_VALS[g % 16];
+
+		return toRet;
+	}
+
 	function tryToJoin(){
 		ses.call('cosmos.directory.join', [], {
 			name: $('#name').val(),
@@ -33,6 +47,9 @@ con.onopen = function(ses,det){
 				uid = gotUid;
 				$('#entry').hide();
 				resizeCanvas();
+				var canvas = document.getElementById('gesture').getContext('2d');
+				canvas.fillStyle = $('#color').val();
+				canvas.fillRect(0,0,$(window).width(),$(window).height());
 			},
 			function(err){
 				console.log(err);
@@ -57,11 +74,11 @@ con.onopen = function(ses,det){
 		var canvas = document.getElementById('gesture').getContext('2d');
 		canvas.clearRect(0,0,$(window).width(),$(window).height());
 		canvas.fillStyle = $('#color').val();
-		canvas.fillRect(0,0,$(window).width(),$(window).height())
+		canvas.fillRect(0,0,$(window).width(),$(window).height());
 		canvas.beginPath();
 		canvas.moveTo($('#gesture').width()/2,$('#gesture').height()/2);
 		//canvas.lineWidth = 2;
-		canvas.strokeStyle = 'blue';
+		canvas.strokeStyle = negateColor($('#color').val());
 		canvas.lineTo(Math.min(evt.center.x,$('#gesture').width()),
 				Math.min(evt.center.y,$('#gesture').height()));
 		canvas.stroke();
@@ -75,11 +92,13 @@ con.onopen = function(ses,det){
 
 		var canvas = document.getElementById('gesture').getContext('2d');
 		canvas.clearRect(0,0,$(window).width(),$(window).height());
+		canvas.fillStyle = $('#color').val();
+		canvas.fillRect(0,0,$(window).width(),$(window).height());
 		canvas.beginPath();
 		canvas.moveTo($('#gesture').width()/2,$('#gesture').height()/2);
 		//canvas.lineWidth = 2;
-		canvas.strokeStyle = 'red';
-		canvas.lineTo(J[0]*$(window).width()/2,J[1]*$(window).height()/2);
+		canvas.strokeStyle = negateColor($('#color').val());
+		canvas.lineTo((J[0] + 1)*$(window).width()/2,(J[1] + 1)*$(window).height()/2);
 		canvas.stroke();
 	});
 
