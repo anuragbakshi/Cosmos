@@ -16,11 +16,37 @@ con.onopen = function(ses,det){
 
 	var uid;
 
+	//Set up the cookie.
+	var cookieName = 'cosmosName=';
+
+	if(document.cookie.substring(0,cookieName.length) == cookieName)
+		$('#name').val(document.cookie.substring(cookieName.length));
+	else{
+		var cookieJar = document.cookie.split(';');
+		for(var i = 0; i < cookieJar.length; i++){
+			if(cookieJar[i].substring(0,cookieName.length) == cookieName){
+				console.log('Found ' + cookieJar[i]);
+				$('#name').val(cookieJar[i].substring(cookieName.length));
+			}
+		}
+	}
+
+	//hide the canvas
+	$('#gesture').hide();
+
+	//Utility for the canvas
 	function resizeCanvas(){
 		$('#gesture').show().attr({width:$(window).width(),height:$(window).height()});
+	}
 
-//		console.log($(window).width() + ' == '  + $('#gesture').width());
-//		console.log($(window).height() + ' == ' + $('#gesture').height());
+	//Color manipulation utilities: distance and negative.
+	//Both use hex notation.
+	function colorDist(c1,c2){
+		var rDiff = parseInt(c1.substring(1,3),16) - parseInt(c2.substring(1,3),16);
+		var gDiff = parseInt(c1.substring(3,5),16) - parseInt(c2.substring(3,5),16);
+		var bDiff = parseInt(c1.substring(5),16) - parseInt(c2.substring(5),16);
+
+		return Math.sqrt(rDiff*rDiff + gDiff*gDiff + bDiff*bDiff);
 	}
 
 	function negateColor(hexVal){
@@ -37,12 +63,22 @@ con.onopen = function(ses,det){
 		return toRet;
 	}
 
+	//Try to join a game...
 	function tryToJoin(){
+		//Validate the color.
+		if(colorDist($('#color').val(),'#000000') < 50){
+			$('#error').show();
+			$('#color').val('#ff33cc');
+			return;
+		}
+
+		//Get the UID from the server and join!
 		ses.call('cosmos.directory.join', [], {
 			name: $('#name').val(),
 			color: $('#color').val()
 		}).then(
 			function(gotUid){
+				//Set up the screen for the game.
 				console.log(gotUid);
 				uid = gotUid;
 				$('#entry').hide();
@@ -50,6 +86,11 @@ con.onopen = function(ses,det){
 				var canvas = document.getElementById('gesture').getContext('2d');
 				canvas.fillStyle = $('#color').val();
 				canvas.fillRect(0,0,$(window).width(),$(window).height());
+
+				//Set up the cookie.
+				var d = new Date();
+				d.setTime(d.getTime() + 9*24*60*60*1000);
+				document.cookie = cookieName + $('#name').val() + ';expires=' + d.toUTCString() + ';';
 			},
 			function(err){
 				console.log(err);
@@ -58,19 +99,21 @@ con.onopen = function(ses,det){
 		);
 	}
 
+	//Register the submit button.
 	$('#submit').on('click',tryToJoin);
 
-	$('#gesture').hide();
-
+	//Register the gestures.
 	hammer.on("tap",function(evt){
 		var x = $(window).width()/2;
 		var y = $(window).height()/2;
 
+		//Send gesture data.
 		var J = [(evt.center.x - x)/(x*2),(evt.center.y - y)/(y*2)];
 		ses.publish('cmd', [],{desc:'input',impulse:J,uid:uid});
 
 		resizeCanvas();
 
+		//Update the canvas to show the impulse vector.
 		var canvas = document.getElementById('gesture').getContext('2d');
 		canvas.clearRect(0,0,$(window).width(),$(window).height());
 		canvas.fillStyle = $('#color').val();
@@ -86,10 +129,13 @@ con.onopen = function(ses,det){
 
 	hammer.on("swipe",function(evt){
 		console.log(evt);
-		evt.preventDefault();
+		evt.preventDefault();//tries to stop chrome's refresh on swipe down.
+
+		//Sends the impulse.
 		var J = [evt.deltaX/$(window).width(),evt.deltaY/$(window).height()];
 		ses.publish('cmd',[],{desc:'input',impulse:J,uid:uid});
 
+		//Draw the impulse vector.
 		var canvas = document.getElementById('gesture').getContext('2d');
 		canvas.clearRect(0,0,$(window).width(),$(window).height());
 		canvas.fillStyle = $('#color').val();
