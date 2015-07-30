@@ -13,10 +13,10 @@ var con = new autobahn.Connection({
 });
 
 con.onopen = function(ses,det){
-	
+
 	var connected = false;
 	var uid =  Math.floor(Math.random()*UID_SIZE);
-	
+
 	function resizeCanvas(){
 		$('#gesture').show().attr({width:$(window).width(),height:$(window).height()});
 
@@ -28,7 +28,7 @@ con.onopen = function(ses,det){
 		if(connected)return;
 
 		connected = obj.desc == 'joined' && obj.uid == uid;
-		
+
 		if(connected){
 			$('#entry').hide();
 			resizeCanvas();
@@ -52,7 +52,7 @@ con.onopen = function(ses,det){
 		ses.publish('cmd', [],{desc:'input',impulse:J,uid:uid});
 
 		resizeCanvas();
-		
+
 		var canvas = document.getElementById('gesture').getContext('2d');
 		canvas.clearRect(0,0,$(window).width(),$(window).height());
 		canvas.beginPath();
@@ -70,11 +70,16 @@ con.onopen = function(ses,det){
 		var J = [evt.deltaX/$(window).width(),evt.deltaY/$(window).height()];
 		ses.publish('cmd',[],{desc:'input',impulse:J,uid:uid});
 
-		
+		var canvas = document.getElementById('gesture').getContext('2d');
+		canvas.clearRect(0,0,$(window).width(),$(window).height());
+		canvas.beginPath();
+		canvas.moveTo($('#gesture').width()/2,$('#gesture').height()/2);
+		//canvas.lineWidth = 2;
+		canvas.strokeStyle = 'red';
+		canvas.lineTo(J[0]*$(window).width()/2,J[1]*$(window).height()/2);
+		canvas.stroke();
 	});
 
 };
 
 con.open();
-
-
