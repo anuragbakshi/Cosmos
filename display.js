@@ -122,8 +122,13 @@ function sketchMain(pjs) {
 				// check for collision
 				var d = vec2.mag(vec2.sub(c.position, c2.position));
 				if(d < r + r2) {
-					var dm = (d * Math.sqrt(-d * d + 2 * (c.mass + c2.mass)) + Math.min(c.mass, c2.mass) - Math.max(c.mass, c2.mass)) / 2;
-					dm = Math.min(c.mass, c2.mass, dm);
+					var dm;
+					if(d > Math.max(r, r2)) {
+						dm = (d * Math.sqrt(-d * d + 2 * (c.mass + c2.mass)) + Math.min(c.mass, c2.mass) - Math.max(c.mass, c2.mass)) / 2;
+					} else {
+						dm = Math.min(c.mass, c2.mass)
+					}
+
 					if(c.mass < c2.mass) {
 						c.mass -= dm;
 						c2.mass += dm;
