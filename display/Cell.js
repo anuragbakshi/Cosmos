@@ -3,12 +3,12 @@ window.Cell = function(position, velocity, mass, name, color) {
 	this.velocity = velocity;
 	this.mass = mass;
 
-	this.name = name ? name !== undefined : "";
-	this.color = color ? color !== undefined : "#646464";
+	this.name = name !== undefined ? name : "";
+	this.color = (0xff << 24) | parseInt((color !== undefined ? color : "#63ac83").substring(1), 16);
 
 	this.dead = false;
 	this.uid = Cell.uidCounter++;
-}
+};
 
 Cell.EJECTION_VELOCITY = 0.2;
 Cell.uidCounter = 0;
@@ -35,11 +35,6 @@ Cell.prototype.update = function(pjs, dt) {
 	}
 };
 
-Cell.prototype.render = function(pjs) {
-	var r = Math.sqrt(this.mass);
-	pjs.ellipse(this.position[0], this.position[1], r * 2, r * 2);
-}
-
 Cell.prototype.ejectMass = function(impulse) {
 	var r = Math.sqrt(this.mass);
 
@@ -54,7 +49,7 @@ Cell.prototype.ejectMass = function(impulse) {
 		vec2.scl(vec2.norm(impulse), -Cell.EJECTION_VELOCITY),
 		ejectedMass
 	);
-}
+};
 
 Cell.prototype.handleInteraction = function(other) {
 	if(other.dead) {
@@ -98,4 +93,17 @@ Cell.prototype.handleInteraction = function(other) {
 		cSmall.velocity = vec2.scl(vec2.sub(pSmall, dp), 1 / cSmall.mass);
 		cLarge.velocity = vec2.scl(vec2.add(pLarge, dp), 1 / cLarge.mass);
 	}
+};
+
+
+
+Cell.prototype.render = function(pjs) {
+	var r = Math.sqrt(this.mass);
+
+	pjs.fill(this.color);
+	pjs.ellipse(this.position[0], this.position[1], r * 2, r * 2);
+
+	var luminance = (0.299 * (this.color.R >>> 16) & 0xff + 0.587 * (this.color.G >>> 8) & 0xff + 0.114 * (this.color.B >>> 0) & 0xff) / 255;
+	pjs.fill(luminance > 0.5 ? 0 : 255);
+	pjs.text(this.name, this.position[0], this.position[1]);
 };

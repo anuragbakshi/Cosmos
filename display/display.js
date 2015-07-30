@@ -8,17 +8,7 @@ var connection = new autobahn.Connection({
 	realm: "realm1"
 });
 
-// var cellUIDCounter = 0;
 var cells = {};
-
-// for(; cellUIDCounter < 1000; cellUIDCounter++) {
-// 	cells[cellUIDCounter] = new Cell(
-// 		cellUIDCounter,
-// 		[Math.random() * 1000, Math.random() * 500],
-// 		[Math.random() - 0.5, Math.random() - 0.5],
-// 		Math.random() * 100
-// 	);
-// }
 
 for(var i = 0; i < 100; i++) {
 	var c = new Cell(
@@ -45,22 +35,6 @@ function controllerJoin(argsArray, argsObject) {
 };
 
 connection.onopen = function(session, details) {
-	// session.subscribe("entry", function(eventArray, eventObject) {
-	// 	if(eventObject.desc === "entering") {
-	// 		session.publish("entry", [], {
-	// 			uid: eventObject.uid,
-	// 			desc: "joined"
-	// 		});
-	//
-	// 		cells[eventObject.uid] = new Cell(
-	// 			eventObject.uid,
-	// 			[100, 100],
-	// 			[0, 0],
-	// 			1000
-	// 		);
-	// 	}
-	// });
-
 	session.register("cosmos.directory.join", controllerJoin).then(
 		function(registration) {
 			console.log("Procedure registered:", registration.id);
@@ -78,8 +52,6 @@ connection.onopen = function(session, details) {
 
 			var cEjected = c.ejectMass(eventObject.impulse);
 			cells[cEjected.uid] = cEjected;
-
-			// cellUIDCounter--;
 		}
 
 		stage.update();
@@ -93,6 +65,8 @@ function sketchMain(pjs) {
 
 	pjs.setup = function() {
 		pjs.size($(window).width(), $(window).height());
+		pjs.textAlign(pjs.CENTER, pjs.CENTER);
+		pjs.textSize(14);
 	};
 
 	pjs.draw = function() {
@@ -102,15 +76,13 @@ function sketchMain(pjs) {
 		var dt = time - lastFrame;
 		lastFrame = time;
 
-		pjs.background(200);
-		pjs.fill(100);
+		pjs.background(0);
 
 		var uids = Object.keys(cells);
 		for(var i = 0; i < uids.length; i++) {
 			var c = cells[uids[i]];
 			c.update(pjs, dt);
 
-			// check for interactions
 			for(var j = i + 1; j < uids.length; j++) {
 				var c2 = cells[uids[j]];
 				c.handleInteraction(c2);
