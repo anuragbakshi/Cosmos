@@ -4,7 +4,6 @@ var stats = new Stats();
 stats.setMode(0);
 
 $("body").append(stats.domElement);
-console.log(stats.update.toString());
 
 var connection = new autobahn.Connection({
 	url: "ws://anurags-mac:8080/ws",
@@ -14,7 +13,7 @@ var connection = new autobahn.Connection({
 var cellUIDCounter = -1;
 var cells = {};
 
-for(; cellUIDCounter > -500; cellUIDCounter--) {
+for(; cellUIDCounter > -1000; cellUIDCounter--) {
 	cells[cellUIDCounter] = {
 		uid: cellUIDCounter,
 		position: [Math.random() * 1000, Math.random() * 500],
@@ -35,7 +34,7 @@ connection.onopen = function(session, details) {
 				uid: eventObject.uid,
 				position: [100, 100],
 				velocity: [0, 0],
-				mass: 10000,
+				mass: 1000,
 				dead: false
 			};
 		}
@@ -121,19 +120,6 @@ function sketchMain(pjs) {
 				var r2 = Math.sqrt(c2.mass);
 
 				// check for collision
-				var d = vec2.mag(vec2.sub(c.position, c2.position));
-				if(d < r + r2) {
-					var dm = (d * Math.sqrt(-d * d + 2 * (c.mass + c2.mass)) + Math.min(c.mass, c2.mass) - Math.max(c.mass, c2.mass)) / 2;
-					dm = (dm < 0)? -dm:dm;
-					dm = Math.min(c.mass, c2.mass, dm);
-					if(c.mass < c2.mass) {
-						c.mass -= dm;
-						c2.mass += dm;
-					} else {
-						c.mass += dm;
-						c2.mass -= dm;
-					}
-
 				var cSmall, cLarge;
 				if(c.mass < c2.mass) {
 					cSmall = c;
@@ -180,6 +166,8 @@ function sketchMain(pjs) {
 				delete cells[uids[i]];
 			}
 		}
+
+		// console.log(JSON.stringify(cells).length);
 
 		stats.end();
 	};
