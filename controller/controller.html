@@ -8,19 +8,34 @@
 
 		<script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-		<script src="http://hammerjs.github.io/dist/hammer.js"></script>
+		<!--<script src="http://hammerjs.github.io/dist/hammer.js"></script>-->
+		<script src="/vec2.js"></script>
+
+		<style>
+		#error{
+			background-color: red;
+			display: none;
+		}
+
+		body{
+			overflow-y: hidden;
+		}
+		</style>
 
 </head>
 <body>
 <div id="entry">
 <form>
 Enter your name:<input type="text" id="name"></input>
-Pick a color:<input type="color" id="color"></input>
-<input type="button" id="submit">Submit</input>
+Pick a color:<input type="color" id="color" value="#ff33cc"></input>
+<div id="error">Please select another color! It would be difficult for you to see yourself otherwise.</div>
+<input type="button" id="submit" value="Go!"></input>
 </form>
 </div>
 
 <canvas id="gesture"></canvas>
+<script src="virtualJoystick.js"></script>
 <script src="controllerScript.js"></script>
+
 </body>
 </html>
