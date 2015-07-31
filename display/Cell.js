@@ -38,7 +38,7 @@ Cell.prototype.update = function(pjs, dt) {
 };
 
 Cell.prototype.ejectMass = function(impulse) {
-	if(this.mass < 50) {
+	if(this.mass < 10) {
 		return;
 	}
 
