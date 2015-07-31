@@ -1,4 +1,5 @@
 var REFRESH = 10;
+var SEND_GAP = 3;
 var SENSITIVITY = .001;
 
 function makeJoystick(canvasElem,wampSes,color, uid){
@@ -6,8 +7,7 @@ function makeJoystick(canvasElem,wampSes,color, uid){
 	var baseY = 0;
 	var stickX = 0;
 	var stickY = 0;
-	var baseRad = 100;
-	var stickRads = [75,125];
+	var screenToRad = 15;
 
 	var pressed = false;
 
@@ -44,24 +44,35 @@ function makeJoystick(canvasElem,wampSes,color, uid){
 		var canvas = canvasElem[0].getContext('2d');
 		canvas.beginPath();
 		canvas.strokeStyle = window.negateColor(color);
+		canvas.lineWidth = 3;
 		canvas.arc(x,y,rad,0,2*Math.PI,false);
 		canvas.stroke();
 	}
+
+	var tick = 0;
 
 	setInterval(function(){
 		if(pressed){
 			var canvas = canvasElem[0].getContext('2d');
 			canvas.fillStyle = color;
 			canvas.fillRect(0,0,$(window).width(),$(window).height());
-			drawCircle(baseX,baseY,baseRad);
-			drawCircle(stickX,stickY,stickRads[0]);
-			drawCircle(stickX,stickY,stickRads[1]);
 
-			wampSes.publish("cmd",[],{
-				desc:'input',
-				impulse:vec2.scl([stickX - baseX,stickY - baseY],SENSITIVITY),
-				uid:uid
-			});
+			var radius = Math.min($(window).width(),$(window).height())/screenToRad;
+
+			drawCircle(baseX,baseY,radius);
+			drawCircle(stickX,stickY,radius - 10);
+			drawCircle(stickX,stickY,radius + 10);
+
+			if(tick % SEND_GAP == 0)
+				wampSes.publish("cmd",[],{
+					desc:'input',
+					impulse:vec2.scl([stickX - baseX,stickY - baseY],SENSITIVITY),
+					uid:uid
+				});
+
+			tick++;
+		}else{
+			tick = 0;
 		}
 	},REFRESH);
 }
