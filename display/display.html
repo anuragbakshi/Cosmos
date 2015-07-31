@@ -3,19 +3,42 @@
 	<head>
 		<meta charset="utf-8">
 
-		<title>Osmos Display</title>
+		<title>Cosmos Display</title>
 		<link rel="stylesheet" href="display.css">
+
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
 
 		<script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 		<script src="https://rawgit.com/processing-js/processing-js/v1.4.8/processing.min.js"></script>
 		<script src="https://rawgit.com/mrdoob/stats.js/master/build/stats.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+
 		<script src="/vec2.js"></script>
 		<script src="Cell.js"></script>
 	</head>
 
 	<body>
-		<canvas id="display"></canvas>
+		<div id="wrapper" class="fill-height">
+			<div id="title-bar" class="row">
+				<div class="col-md-12 text-center">
+					<span>Cosmos</span>
+				</div>
+			</div>
+
+			<div id="app-container" class="row">
+				<div id="display-container" class="col-md-10">
+					<canvas id="display"></canvas>
+				</div>
+
+				<div id="scoreboard" class="col-md-2 text-center">
+					<h2>Scoreboard</h2>
+					<ol class="list-unstyled h4">
+					</ol>
+				</div>
+			</div>
+		</div>
 	</body>
 
 	<script src="display.js"></script>

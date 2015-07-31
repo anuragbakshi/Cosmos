@@ -1,10 +1,12 @@
-window.Cell = function(position, velocity, mass, name, color) {
+window.Cell = function(position, velocity, mass, name, color, isControlled) {
 	this.position = position;
 	this.velocity = velocity;
 	this.mass = mass;
 
 	this.name = name !== undefined ? name : "";
 	this.color = (0xff << 24) | parseInt((color !== undefined ? color : "#63ac83").substring(1), 16);
+
+	this.isControlled = isControlled !== undefined ? isControlled : false;
 
 	this.dead = false;
 	this.uid = Cell.uidCounter++;
@@ -36,6 +38,10 @@ Cell.prototype.update = function(pjs, dt) {
 };
 
 Cell.prototype.ejectMass = function(impulse) {
+	if(this.mass < 50) {
+		return;
+	}
+
 	var r = Math.sqrt(this.mass);
 
 	var ejectedMass = vec2.mag(impulse) / Cell.EJECTION_VELOCITY;
@@ -45,15 +51,15 @@ Cell.prototype.ejectMass = function(impulse) {
 
 	// console.log(vec2.add(this.position, vec2.scl(vec2.norm(impulse), -r)));
 	return new Cell(
-		vec2.add(this.position, vec2.scl(vec2.norm(impulse), -r)),
-		vec2.scl(vec2.norm(impulse), -Cell.EJECTION_VELOCITY),
+		vec2.add(this.position, vec2.scl(vec2.norm(impulse), -r * 2)),
+		vec2.add(this.velocity, vec2.scl(vec2.norm(impulse), -Cell.EJECTION_VELOCITY)),
 		ejectedMass
 	);
 };
 
 Cell.prototype.handleInteraction = function(other) {
 	if(other.dead) {
-		return;
+		return false;
 	}
 
 	// check for collision
@@ -92,7 +98,11 @@ Cell.prototype.handleInteraction = function(other) {
 
 		cSmall.velocity = vec2.scl(vec2.sub(pSmall, dp), 1 / cSmall.mass);
 		cLarge.velocity = vec2.scl(vec2.add(pLarge, dp), 1 / cLarge.mass);
+
+		return true;
 	}
+
+	return false;
 };
 
 
