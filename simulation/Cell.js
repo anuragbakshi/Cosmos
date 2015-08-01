@@ -15,7 +15,7 @@ window.Cell = function(position, velocity, mass, name, color, isControlled) {
 Cell.EJECTION_VELOCITY = 0.2;
 Cell.uidCounter = 0;
 
-Cell.prototype.update = function(pjs, dt) {
+Cell.prototype.update = function(width, height, dt) {
 	if(this.dead) {
 		return;
 	}
@@ -26,14 +26,14 @@ Cell.prototype.update = function(pjs, dt) {
 	this.position = vec2.add(this.position, vec2.scl(this.velocity, dt));
 
 	// bounce off edges
-	if(this.position[0] - r < 0 || this.position[0] + r > pjs.width) {
+	if(this.position[0] - r < 0 || this.position[0] + r > width) {
 		this.velocity[0] *= -1;
-		this.position[0] = Math.max(r, Math.min(this.position[0], pjs.width - r));
+		this.position[0] = Math.max(r, Math.min(this.position[0], width - r));
 	}
 
-	if(this.position[1] - r < 0 || this.position[1] + r > pjs.height) {
+	if(this.position[1] - r < 0 || this.position[1] + r > height) {
 		this.velocity[1] *= -1;
-		this.position[1] = Math.max(r, Math.min(this.position[1], pjs.height - r));
+		this.position[1] = Math.max(r, Math.min(this.position[1], height - r));
 	}
 };
 
@@ -107,13 +107,13 @@ Cell.prototype.handleInteraction = function(other) {
 
 
 
-Cell.prototype.render = function(pjs) {
-	var r = Math.sqrt(this.mass);
-
-	pjs.fill(this.color);
-	pjs.ellipse(this.position[0], this.position[1], r * 2, r * 2);
-
-	var luminance = (0.299 * (this.color.R >>> 16) & 0xff + 0.587 * (this.color.G >>> 8) & 0xff + 0.114 * (this.color.B >>> 0) & 0xff) / 255;
-	pjs.fill(luminance > 0.5 ? 0 : 255);
-	pjs.text(this.name, this.position[0], this.position[1]);
-};
+// Cell.prototype.render = function(pjs) {
+// 	var r = Math.sqrt(this.mass);
+//
+// 	pjs.fill(this.color);
+// 	pjs.ellipse(this.position[0], this.position[1], r * 2, r * 2);
+//
+// 	var luminance = (0.299 * (this.color.R >>> 16) & 0xff + 0.587 * (this.color.G >>> 8) & 0xff + 0.114 * (this.color.B >>> 0) & 0xff) / 255;
+// 	pjs.fill(luminance > 0.5 ? 0 : 255);
+// 	pjs.text(this.name, this.position[0], this.position[1]);
+// };
