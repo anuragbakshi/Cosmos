@@ -1,6 +1,6 @@
 //osmos controller
 
-var UID_SIZE = Math.pow(10,6);
+//var UID_SIZE = Math.pow(10,6);
 
 // var hammer = new Hammer.Manager($('#gesture')[0]);
 // var tap = new Hammer.Tap();
@@ -17,22 +17,43 @@ con.onopen = function(ses,det){
 	var uid;
 
 	//Set up the cookie.
-	var cookieName = 'cosmosName=';
+	var nameCookie = 'cosmosName=';
+	var colorCookie = 'cosmosColor=';
 
-	if(document.cookie.substring(0,cookieName.length) == cookieName)
-		$('#name').val(document.cookie.substring(cookieName.length));
-	else{
-		var cookieJar = document.cookie.split(';');
+	function handleCookie(){
+		if(document.cookie == undefined)
+			return;
+
+		var cookieJar = document.cookie.split('; ');
 		for(var i = 0; i < cookieJar.length; i++){
-			if(cookieJar[i].substring(0,cookieName.length) == cookieName){
-				console.log('Found ' + cookieJar[i]);
-				$('#name').val(cookieJar[i].substring(cookieName.length));
+			if(cookieJar[i].substring(0,nameCookie.length) == nameCookie){
+				//console.log('Found ' + cookieJar[i]);
+				$('#name').val(cookieJar[i].substring(nameCookie.length));
+			}
+			if(cookieJar[i].substring(0,colorCookie.length) == colorCookie){
+				$('#color').val(cookieJar[i].substring(colorCookie.length));
 			}
 		}
+
+		console.log(document.cookie);
 	}
+
+	function setCookie(){
+		if(document.cookie == undefined)
+			return;
+
+		var d = new Date();
+		d.setTime(d.getTime() + 9*24*60*60*1000);
+		var expiration = ';expires=' + d.toUTCString() + ';';
+		document.cookie = nameCookie + $('#name').val() + expiration;
+		document.cookie = colorCookie + $('#color').val() + expiration;
+	}
+
 
 	//hide the canvas
 	$('#gesture').hide();
+
+	handleCookie();
 
 	//Utility for the canvas
 	function resizeCanvas(){
@@ -40,6 +61,8 @@ con.onopen = function(ses,det){
 			.attr({width:$(window).width(),height:$(window).height()})
 			.css('background-color',$('#color').val());
 	}
+
+	window.resizeCanvas = resizeCanvas;
 
 	//Color manipulation utilities: distance and negative.
 	//Both use hex notation.
@@ -85,15 +108,13 @@ con.onopen = function(ses,det){
 				//Set up the screen for the game.
 				console.log(gotUid);
 				uid = gotUid;
-				$('#entry').hide();
+//				$('#entry').hide();
 				resizeCanvas();
 
 				makeJoystick($('#gesture'),ses,$('#color').val(),uid);
 
 				//Set up the cookie.
-				var d = new Date();
-				d.setTime(d.getTime() + 9*24*60*60*1000);
-				document.cookie = cookieName + $('#name').val() + ';expires=' + d.toUTCString() + ';';
+				setCookie();
 			},
 			function(err){
 				console.log(err);

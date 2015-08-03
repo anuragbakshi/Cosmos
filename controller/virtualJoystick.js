@@ -1,6 +1,6 @@
-var REFRESH = 10;
-var SEND_GAP = 3;
-var SENSITIVITY = .001;
+var REFRESH = 10;//how fast the joystick re-draws.
+var SEND_GAP = 3;//how many ticks to wait until message publication.
+var SENSITIVITY = .001;//pixel to impulse scaling.
 
 function makeJoystick(canvasElem,wampSes,color, uid){
 	var baseX = 0;
@@ -21,8 +21,7 @@ function makeJoystick(canvasElem,wampSes,color, uid){
 		pressed = true;
 	});
 
-	canvasElem.bind('touchend',function(event){
-		console.log(event);
+	canvasElem.bind('touchend mouseup',function(event){
 		baseX = stickX = 0;
 		baseY = stickY = 0;
 
@@ -40,6 +39,23 @@ function makeJoystick(canvasElem,wampSes,color, uid){
 		}
 	});
 
+	canvasElem.bind('mousedown',function(event){
+		stickX = event.originalEvent.clientX;
+		stickY = event.originalEvent.clientY;
+
+		baseX = stickX;
+		baseY = stickY;
+
+		pressed = true;
+	});
+
+	canvasElem.bind('mousemove',function(event){
+		if(pressed){
+			stickX = event.originalEvent.clientX;
+			stickY = event.originalEvent.clientY;
+		}
+	});
+
 	function drawCircle(x,y,rad){
 		var canvas = canvasElem[0].getContext('2d');
 		canvas.beginPath();
@@ -52,6 +68,8 @@ function makeJoystick(canvasElem,wampSes,color, uid){
 	var tick = 0;
 
 	setInterval(function(){
+		resizeCanvas();
+
 		if(pressed){
 			var canvas = canvasElem[0].getContext('2d');
 			canvas.fillStyle = color;
