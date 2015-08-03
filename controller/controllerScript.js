@@ -8,12 +8,11 @@
 // hammer.add([tap,swipe]);
 
 var con = new autobahn.Connection({
-	url:"ws://cosmos:8080/ws",
+	url:"ws://192.168.0.107:8080/ws",
 	realm:"realm1"
 });
 
 con.onopen = function(ses,det){
-
 	var uid;
 
 	//Set up the cookie.
