@@ -104,16 +104,3 @@ Cell.prototype.handleInteraction = function(other) {
 
 	return false;
 };
-
-
-
-// Cell.prototype.render = function(pjs) {
-// 	var r = Math.sqrt(this.mass);
-//
-// 	pjs.fill(this.color);
-// 	pjs.ellipse(this.position[0], this.position[1], r * 2, r * 2);
-//
-// 	var luminance = (0.299 * (this.color.R >>> 16) & 0xff + 0.587 * (this.color.G >>> 8) & 0xff + 0.114 * (this.color.B >>> 0) & 0xff) / 255;
-// 	pjs.fill(luminance > 0.5 ? 0 : 255);
-// 	pjs.text(this.name, this.position[0], this.position[1]);
-// };

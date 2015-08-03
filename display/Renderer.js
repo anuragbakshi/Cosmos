@@ -1,7 +1,8 @@
-window.Renderer = function(world, canvas, framerate) {
-	framerate = framerate !== undefined ? framerate : 60
+window.Renderer = function(world, canvas, framerate, onRender) {
+	framerate = framerate !== undefined ? framerate : 60;
 
-	// this.world = world;
+	onRender = onRender !== undefined ? onRender : function() {};
+
 	this.pjsSketch = new Processing(canvas, function(pjs) {
 		pjs.setup = function() {
 			pjs.size(world.width, world.height);
@@ -15,7 +16,7 @@ window.Renderer = function(world, canvas, framerate) {
 		};
 
 		pjs.draw = function() {
-			stats.begin();
+			onRender();
 
 			pjs.background(100);
 
