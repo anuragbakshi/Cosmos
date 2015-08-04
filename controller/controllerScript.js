@@ -2,10 +2,10 @@
 
 //var UID_SIZE = Math.pow(10,6);
 
-// var hammer = new Hammer.Manager($('#gesture')[0]);
-// var tap = new Hammer.Tap();
-// var swipe = new Hammer.Swipe();
-// hammer.add([tap,swipe]);
+var hammer = new Hammer.Manager($('#gesture')[0]);
+var tap = new Hammer.Tap();
+var swipe = new Hammer.Swipe();
+hammer.add([tap,swipe]);
 
 var con = new autobahn.Connection({
 	url:"ws://cosmos:8080/ws",
@@ -110,7 +110,7 @@ con.onopen = function(ses,det){
 //				$('#entry').hide();
 				resizeCanvas();
 
-				makeJoystick($('#gesture'),ses,$('#color').val(),uid);
+				//makeJoystick($('#gesture'),ses,$('#color').val(),uid);
 
 				//Set up the cookie.
 				setCookie();
@@ -124,6 +124,20 @@ con.onopen = function(ses,det){
 
 	//Register the submit button.
 	$('#submit').on('click',tryToJoin);
+
+	hammer.on('swipe',function(evt){
+		var J = [Math.cos(evt.angle * Math.PI / 180),Math.sin(evt.angle * Math.PI/180)];
+ 		ses.publish('cmd',[],{desc:'input',impulse:J,uid:uid});
+
+		var canvas = document.getElementById('gesture').getContext('2d');
+		canvas.clearRect(0,0,$(window).width(),$(window).height());
+		canvas.beginPath();
+		canvas.moveTo($('#gesture').width()/2,$('#gesture').height()/2);
+		canvas.lineWidth = 2;
+		canvas.strokeStyle = negateColor($('#color').val());
+		canvas.lineTo(evt.deltaX + $(window).width()/2,evt.deltaY + $(window).height()/2);
+		canvas.stroke();
+	});
 
 };
 
