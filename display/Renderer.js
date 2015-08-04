@@ -18,7 +18,7 @@ window.Renderer = function(world, canvas, framerate, onRender) {
 		pjs.draw = function() {
 			onRender();
 
-			pjs.background(100);
+			pjs.background(20);
 
 			for(var uid in world.cells) {
 				var c = world.cells[uid];
