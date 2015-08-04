@@ -22,6 +22,19 @@
 			height: 100%;
 		}
 
+		#ink {
+			display: block; position: absolute;
+			background: inherit;
+			border-radius: 100%;
+			transform: scale(0);
+		}
+
+		#ink.animate {animation: ripple 0.5s linear;}
+		@keyframes ripple {
+			0% {opacity: 100%; transform: scale(0);}
+			100% {opacity: 100%; transform: scale(2.5);}
+		}
+
 		html{
 			width: 100%;
 			height: 100%;
@@ -36,6 +49,9 @@
 
 </head>
 <body>
+
+<span id="ink"></span>
+
 <div id="entry" class="form-horizontal">
 <!--<form>-->
 Enter your name:<input type="text" id="name" class="form-control" placeholder="<name>"></input>
@@ -58,9 +74,11 @@ Pick a color:
 <!--</form>-->
 </div>
 
+
+
 <div id="gesture">
 	<div id="intro" class="well">
-		<h2 class="text-muted">Cosmos controller!</h2>
+		<h2 class="text-muted">Cosmos controller</h2>
 		<h6 class="text-muted">Please enter your name, select a color and click 'Go!'</h6>
 		<h6 class="text-muted">Once you're in, this region will be your joystick. Tap and drag to move!</h6>
 	</div>
