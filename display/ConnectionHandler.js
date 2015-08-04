@@ -2,7 +2,7 @@ window.ConnectionHandler = function(world) {
 	this.world = world;
 
 	this.connection = new autobahn.Connection({
-		url: "ws://cosmos:8080/ws",
+		url: "ws://192.168.0.108:8080/ws",
 		realm: "realm1"
 	});
 
