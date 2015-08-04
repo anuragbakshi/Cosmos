@@ -4,7 +4,7 @@ window.Cell = function(position, velocity, mass, name, color, isControlled) {
 	this.mass = mass;
 
 	this.name = name !== undefined ? name : "";
-	this.color = (0xff << 24) | parseInt((color !== undefined ? color : "#63ac83").substring(1), 16);
+	this.color = (0xff << 24) | parseInt((color !== undefined ? color : "#b0b070").substring(1), 16);
 
 	this.isControlled = isControlled !== undefined ? isControlled : false;
 

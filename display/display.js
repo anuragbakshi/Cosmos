@@ -22,12 +22,11 @@ var renderer = new Renderer(world, $display[0], FRAMERATE, function() {
 
 var connectionHandler = new ConnectionHandler(world);
 
-for(var i = 0; i < 10; i++) {
+for(var i = 0; i < 100; i++) {
 	var c = new Cell(
-		[Math.random() * 1000, Math.random() * 500],
-		[Math.random() - 0.5, Math.random() - 0.5],
-		// [0, 0],
-		Math.random() * 100
+		[random.randInt(0, world.width), random.randInt(0, world.height)],
+		[random.rand(-0.01, 0.01), random.rand(-0.01, 0.01)],
+		random.randInt(50, 100)
 	);
 
 	world.addCell(c);
