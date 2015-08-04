@@ -2,18 +2,24 @@
 
 //var UID_SIZE = Math.pow(10,6);
 
-var hammer = new Hammer.Manager($('#gesture')[0]);
-var tap = new Hammer.Tap();
-var swipe = new Hammer.Swipe();
-hammer.add([tap,swipe]);
+var REFRESH = 100;
+var SENSITIVITY = .01;
+
+// For hammer, if swiping is to be used.
+// var hammer = new Hammer.Manager($('#gesture')[0]);
+// var tap = new Hammer.Tap();
+// var swipe = new Hammer.Swipe();
+// hammer.add([tap,swipe]);
 
 var con = new autobahn.Connection({
-	url:"ws://cosmos:8080/ws",
+	url:"ws://192.168.0.108:8080/ws",
 	realm:"realm1"
 });
 
 con.onopen = function(ses,det){
 	var uid;
+
+	var joystickMade = false;
 
 	//Set up the cookie.
 	var nameCookie = 'cosmosName=';
@@ -110,7 +116,43 @@ con.onopen = function(ses,det){
 //				$('#entry').hide();
 				resizeCanvas();
 
-				//makeJoystick($('#gesture'),ses,$('#color').val(),uid);
+				if(!joystickMade){
+					var stk = new VirtualJoystick({
+						container: $('#gesture')[0],
+						mouseSupport: true,
+						strokeStyle: negateColor($('#color').val())
+					});
+
+					var pressed = false;
+
+					stk.addEventListener('touchStart',function(){
+						pressed = true;
+					});
+
+					stk.addEventListener('touchEnd',function(){
+						pressed = false;
+					});
+
+					stk.addEventListener('mouseUp',function(){
+						pressed = false;
+					});
+
+					stk.addEventListener('mouseDown',function(){
+						pressed = true;
+					});
+
+					setInterval(function(){
+						console.log(pressed);
+						if(pressed){
+							impulse = vec2.scl([stk.deltaX(),stk.deltaY()],SENSITIVITY);
+							ses.publish('cmd',[],{
+								desc:'input',
+								impulse: impulse,
+								uid: uid
+							});
+						}
+					},REFRESH);
+				}
 
 				//Set up the cookie.
 				setCookie();
