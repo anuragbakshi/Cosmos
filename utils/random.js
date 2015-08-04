@@ -5,5 +5,5 @@ random.rand = function(min, max) {
 }
 
 random.randInt = function(min, max) {
-	return Math.floor(random(min, max + 1));
+	return Math.floor(random.rand(min, max + 1));
 }

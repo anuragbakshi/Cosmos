@@ -2,16 +2,16 @@ window.ConnectionHandler = function(world) {
 	this.world = world;
 
 	this.connection = new autobahn.Connection({
-		url: "ws://192.168.0.107:8080/ws",
+		url: "ws://cosmos:8080/ws",
 		realm: "realm1"
 	});
 
 	this.connection.onopen = function(session, details) {
 		session.register("cosmos.directory.join", function(argsArray, argsObject) {
 			var c = new Cell(
-				[100, 100],
+				[random.randInt(100, world.width - 100), random.randInt(100, world.height - 100)],
 				[0, 0],
-				100,
+				1000,
 				argsObject.name,
 				argsObject.color,
 				true

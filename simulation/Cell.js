@@ -12,7 +12,7 @@ window.Cell = function(position, velocity, mass, name, color, isControlled) {
 	this.uid = Cell.uidCounter++;
 };
 
-Cell.EJECTION_VELOCITY = 0.2;
+Cell.EJECTION_VELOCITY = 0.075;
 Cell.uidCounter = 0;
 
 Cell.prototype.update = function(width, height, dt) {
@@ -51,7 +51,7 @@ Cell.prototype.ejectMass = function(impulse) {
 
 	// console.log(vec2.add(this.position, vec2.scl(vec2.norm(impulse), -r)));
 	return new Cell(
-		vec2.add(this.position, vec2.scl(vec2.norm(impulse), -r * 2)),
+		vec2.add(this.position, vec2.scl(vec2.norm(impulse), -1.25 * (r + Math.sqrt(ejectedMass)))),
 		vec2.add(this.velocity, vec2.scl(vec2.norm(impulse), -Cell.EJECTION_VELOCITY)),
 		ejectedMass
 	);

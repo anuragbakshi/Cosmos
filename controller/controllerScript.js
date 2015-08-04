@@ -8,7 +8,7 @@
 // hammer.add([tap,swipe]);
 
 var con = new autobahn.Connection({
-	url:"ws://192.168.0.107:8080/ws",
+	url:"ws://cosmos:8080/ws",
 	realm:"realm1"
 });
 
