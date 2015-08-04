@@ -3,7 +3,7 @@
 //var UID_SIZE = Math.pow(10,6);
 
 var REFRESH = 100;
-var SENSITIVITY = .01;
+var SENSITIVITY = .005;
 
 // For hammer, if swiping is to be used.
 // var hammer = new Hammer.Manager($('#gesture')[0]);
@@ -56,7 +56,7 @@ con.onopen = function(ses,det){
 
 
 	//hide the canvas
-	$('#gesture').hide();
+	//$('#gesture').hide();
 
 	handleCookie();
 
@@ -93,6 +93,9 @@ con.onopen = function(ses,det){
 		return toRet;
 	}
 
+	//make color picker
+	$('#color').simplecolorpicker({theme: 'regularfont'});
+
 	window.negateColor = negateColor;
 
 	//Try to join a game...
@@ -113,7 +116,7 @@ con.onopen = function(ses,det){
 				//Set up the screen for the game.
 				console.log(gotUid);
 				uid = gotUid;
-//				$('#entry').hide();
+				$('#intro').hide();
 				resizeCanvas();
 
 				if(!joystickMade){
@@ -167,6 +170,7 @@ con.onopen = function(ses,det){
 	//Register the submit button.
 	$('#submit').on('click',tryToJoin);
 
+/** Code for swiping (in case of future need).
 	hammer.on('swipe',function(evt){
 		var J = [Math.cos(evt.angle * Math.PI / 180),Math.sin(evt.angle * Math.PI/180)];
  		ses.publish('cmd',[],{desc:'input',impulse:J,uid:uid});
@@ -180,7 +184,7 @@ con.onopen = function(ses,det){
 		canvas.lineTo(evt.deltaX + $(window).width()/2,evt.deltaY + $(window).height()/2);
 		canvas.stroke();
 	});
-
+**/
 };
 
 con.open();

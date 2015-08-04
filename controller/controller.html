@@ -4,12 +4,17 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
 
-		<title>Osmos game controller</title>
+		<title>Cosmos game controller</title>
+
+		<link rel="stylesheet" href="https://bootswatch.com/darkly/bootstrap.min.css">
+    <link rel="stylesheet" href="jquery.simplecolorpicker.css">
+    <link rel="stylesheet" href="jquery.simplecolorpicker-regularfont.css">
 
 		<script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 		<!--<script src="http://hammerjs.github.io/dist/hammer.js"></script> For swiping.-->
 		<script src="/utils/vec2.js"></script>
+		<script src="jquery.simplecolorpicker.js"></script>
 
 		<style>
 		#gesture{
@@ -31,15 +36,35 @@
 
 </head>
 <body>
-<div id="entry">
+<div id="entry" class="form-horizontal">
 <!--<form>-->
-Enter your name:<input type="text" id="name"></input>
-Pick a color:<input type="color" id="color"></input>
+Enter your name:<input type="text" id="name" class="form-control" placeholder="<name>"></input>
+Pick a color:
+<select name="color_selected" id="color" class="form-control">
+                        <option value="#7bd148">Green</option>
+                        <option value="#5484ed">Bold blue</option>
+                        <option value="#a4bdfc">Blue</option>
+                        <option value="#46d6db">Turquoise</option>
+                        <option value="#7ae7bf">Light green</option>
+                        <option value="#51b749">Bold green</option>
+                        <option value="#fbd75b">Yellow</option>
+                        <option value="#ffb878">Orange</option>
+                        <option value="#ff887c">Red</option>
+                        <option value="#dc2127">Bold red</option>
+                        <option value="#dbadff">Purple</option>
+                        <option value="#e1e1e1">Gray</option>
+</select>
 <input type="button" id="submit" value="Go!"></input>
 <!--</form>-->
 </div>
 
-<div id="gesture"></div>
+<div id="gesture">
+	<div id="intro" class="well">
+		<h2 class="text-muted">Cosmos controller!</h2>
+		<h6 class="text-muted">Please enter your name, select a color and click 'Go!'</h6>
+		<h6 class="text-muted">Once you're in, this region will be your joystick. Tap and drag to move!</h6>
+	</div>
+</div>
 <script src="virtualJoystick.js"></script>
 <script src="controllerScript.js"></script>
 
