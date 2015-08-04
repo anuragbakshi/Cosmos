@@ -4,26 +4,42 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
 
-		<title>Osmos game controller</title>
+		<title>Cosmos game controller</title>
 
 		<script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-		<script src="http://hammerjs.github.io/dist/hammer.js"></script>
-		<script src="/utils/vec2.js"></script>
+		<!--<script src="http://hammerjs.github.io/dist/hammer.js"></script>-->
+		<script src="/vec2.js"></script>
 
 		<style>
+		html{
+			width: 100%;
+			height: 100%;
+		}
+
 		#error{
 			background-color: red;
 			display: none;
 		}
 
 		body{
+			width: 100%;
+			height: 100%;
 			overflow-y: hidden;
+		}
+
+		#gesture{
+			width:100%;
+			height: 100%;
+			padding: 0;
+			margin: 0;
 		}
 		</style>
 
 </head>
 <body>
+
+
 <div id="entry">
 <!--<form>-->
 Enter your name:<input type="text" id="name"></input>
@@ -31,9 +47,9 @@ Pick a color:<input type="color" id="color"></input>
 <div id="error">Please select another color! It would be difficult for you to see yourself otherwise.</div>
 <input type="button" id="submit" value="Go!"></input>
 <!--</form>-->
-</div>
+</div><br/>
+<div id="gesture"></div>
 
-<canvas id="gesture"></canvas>
 <script src="virtualJoystick.js"></script>
 <script src="controllerScript.js"></script>
 
