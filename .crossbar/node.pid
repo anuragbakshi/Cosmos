@@ -1,0 +1,16 @@
+{
+   "pid": 9048,
+   "options": {
+      "reactor": null,
+      "loglevel": "info",
+      "command": "start",
+      "logdir": null,
+      "debug": false,
+      "config": "C:\\Users\\Heman\\Documents\\Internships\\Mphasis 8-2015\\code\\Cosmos\\.crossbar\\config.json",
+      "cbdir": "C:\\Users\\Heman\\Documents\\Internships\\Mphasis 8-2015\\code\\Cosmos\\.crossbar"
+   },
+   "argv": [
+      "C:\\Python27\\Scripts\\crossbar-script.py",
+      "start"
+   ]
+}

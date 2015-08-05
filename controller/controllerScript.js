@@ -19,12 +19,12 @@ var con = new autobahn.Connection({
 
 con.onopen = function(ses,det){
 	var uid;
-
+	var stk;
 	var joystickMade = false;
 
 	function makeJoystick(){
 		if(!joystickMade){
-			var stk = new VirtualJoystick({
+			stk = new VirtualJoystick({
 				container: $('#gesture')[0],
 				mouseSupport: true,
 				strokeStyle: negateColor($('#color').val())
@@ -127,6 +127,21 @@ con.onopen = function(ses,det){
 
 	}
 
+
+	function resetScreen(){
+		$('#gesture').css('background-color','inherit');
+
+		$('#ink').removeClass('animate')
+			.addClass('vanish');
+
+		$('#intro').fadeIn(ANIMATION_DURATION);
+		$('#entry').fadeIn(ANIMATION_DURATION);
+		$('#obituary').text("Our condolensces. Press 'Go!' again to re-start!");
+
+		if(joystickMade) stk.destroy();
+		joystickMade = false;
+	}
+
 	//Color manipulation utilities: distance and negative.
 	//Both use hex notation.
 	function colorDist(c1,c2){//Not used.
@@ -151,6 +166,15 @@ con.onopen = function(ses,det){
 		return toRet;
 	}
 
+	function subDeath(){
+		console.log('sub death call!');
+		ses.subscribe('cosmos.gameevents',function(arr,obj){
+			console.log('rcvd');
+			if(obj.desc == 'death' && obj.uid == uid)
+				resetScreen();
+		});
+	}
+
 	//make color picker
 	$('#color').simplecolorpicker({theme: 'regularfont'});
 
@@ -165,6 +189,7 @@ con.onopen = function(ses,det){
 			function(gotUid){
 				console.log(gotUid);
 				uid = gotUid;
+				subDeath();
 
 				animateJoin();
 				//Set up the cookie.
