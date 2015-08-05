@@ -4,6 +4,7 @@ stats.setMode(0);
 window.speed = 1;
 
 var FRAMERATE = 60;
+var FIXED_WIDTH = 2000;
 
 var lastFrameTime = Date.now();
 
@@ -11,9 +12,11 @@ var $displayContainer = $("#display-container");
 var $display = $("#display");
 var $scoreboardList = $("#scoreboard ol");
 
-var world = new World($displayContainer.width(), $displayContainer.height());
+var scale = FIXED_WIDTH / $displayContainer.width();
+
+var world = new World(scale * $displayContainer.width(), scale * $displayContainer.height());
 var scoreboard = new Scoreboard(world, $scoreboardList[0]);
-var renderer = new Renderer(world, $display[0], FRAMERATE, function() {
+var renderer = new Renderer(world, $display[0], FRAMERATE, scale, function() {
 	var time = Date.now();
 	var dt = time - lastFrameTime;
 

@@ -1,11 +1,12 @@
-window.Renderer = function(world, canvas, framerate, onRender) {
+window.Renderer = function(world, canvas, framerate, scale, onRender) {
 	framerate = framerate !== undefined ? framerate : 60;
+	scale = scale !== undefined ? scale : 1;
 
 	onRender = onRender !== undefined ? onRender : function() {};
 
 	this.pjsSketch = new Processing(canvas, function(pjs) {
 		pjs.setup = function() {
-			pjs.size(world.width, world.height);
+			pjs.size(world.width / scale, world.height / scale);
 
 			pjs.frameRate(framerate);
 
@@ -18,6 +19,7 @@ window.Renderer = function(world, canvas, framerate, onRender) {
 		pjs.draw = function() {
 			onRender();
 
+			pjs.scale(1 / scale);
 			pjs.background(20);
 
 			for(var uid in world.cells) {
