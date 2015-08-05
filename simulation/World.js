@@ -30,7 +30,7 @@ World.prototype.step = function(dt) {
 		if(this.cells[uids[i]].dead) {
 			if(this.cells[uids[i]].isControlled) {
 				playerUpdated = true;
-				onPlayerDie(uids[i]);
+				this.onPlayerDie(uids[i]);
 			}
 
 			delete this.cells[uids[i]];
