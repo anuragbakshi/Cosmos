@@ -33,12 +33,13 @@
 
 		#ink.animate {animation: ripple 0.5s linear;}
 		@keyframes ripple {
-			0% {opacity: 100%; transform: scale(0);}
+			0% {opacity: 0%; transform: scale(0);}
 			100% {opacity: 100%; transform: scale(2.5);}
 		}
 
-		#ink.vanish {animation: popin 0.5s linear;}
-		@keyframes popin{
+		#ink.vanish {animation: rippleOut 0.5s linear;}
+		@keyframes rippleOut{
+			0% {opacity: 100%; transform: scale(2.5);}
 			100% {opacity: 0%; transform: scale(0);}
 		}
 

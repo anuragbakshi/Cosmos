@@ -107,7 +107,7 @@ con.onopen = function(ses,det){
 		var colorLeft = $("option[value='"+ $('#color').val() +"']").offset().left;
 		var colorTop = $("option[value='"+ $('#color').val() +"']").offset().top;
 
-		$('#ink ').show()
+		$('#ink ').removeClass('vanish').show()
 			.css('background-color',$('#color').val())
 			.css({
 				top: colorTop + 'px',
@@ -129,14 +129,16 @@ con.onopen = function(ses,det){
 
 
 	function resetScreen(){
-		$('#gesture').css('background-color','inherit');
-
 		$('#ink').removeClass('animate')
 			.addClass('vanish');
 
 		$('#intro').fadeIn(ANIMATION_DURATION);
 		$('#entry').fadeIn(ANIMATION_DURATION);
 		$('#obituary').text("Our condolensces. Press 'Go!' again to re-start!");
+
+		setTimeout(function(){
+			$('#gesture').css('background-color','transparent');
+		},ANIMATION_DURATION);
 
 		if(joystickMade) stk.destroy();
 		joystickMade = false;
