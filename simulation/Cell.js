@@ -58,6 +58,10 @@ Cell.prototype.ejectMass = function(impulse) {
 	);
 };
 
+Cell.prototype.split = function() {
+	return this.ejectMass(vec2.scl(vec2.rand(), random.rand(0.4, 0.6) * this.mass * Cell.EJECTION_VELOCITY));
+};
+
 Cell.prototype.handleInteraction = function(other) {
 	if(other.dead) {
 		return false;

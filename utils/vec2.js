@@ -19,3 +19,9 @@ vec2.mag = function(v) {
 vec2.norm = function(v) {
 	return vec2.scl(v, 1 / vec2.mag(v));
 };
+
+vec2.rand = function() {
+	var t = random.rand(0, 2 * Math.PI);
+
+	return [Math.cos(t), Math.sin(t)];
+}

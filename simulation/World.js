@@ -12,9 +12,13 @@ World.prototype.step = function(dt) {
 	var playerUpdated = false;
 
 	var uids = Object.keys(this.cells);
+	var allTooBig = true;
+
 	for(var i = 0; i < uids.length; i++) {
 		var c = this.cells[uids[i]];
 		c.update(this.width, this.height, dt);
+
+		allTooBig &= c.mass > Cell.PLAYER_START_MASS;
 
 		for(var j = i + 1; j < uids.length; j++) {
 			var c2 = this.cells[uids[j]];
@@ -23,6 +27,13 @@ World.prototype.step = function(dt) {
 			if(interacted && (c.isControlled || c2.isControlled)) {
 				playerUpdated = true;
 			}
+		}
+	}
+
+	if(allTooBig) {
+		for(var i = 0; i < uids.length; i++) {
+			var c = this.cells[uids[i]];
+			this.addCell(c.split());
 		}
 	}
 

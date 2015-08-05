@@ -1,6 +1,8 @@
 var stats = new Stats();
 stats.setMode(0);
 
+window.speed = 1;
+
 var FRAMERATE = 60;
 
 var lastFrameTime = Date.now();
@@ -15,7 +17,7 @@ var renderer = new Renderer(world, $display[0], FRAMERATE, function() {
 	var time = Date.now();
 	var dt = time - lastFrameTime;
 
-	world.step(dt);
+	world.step(dt * window.speed);
 
 	lastFrameTime = time;
 });
@@ -31,3 +33,12 @@ for(var i = 0; i < 100; i++) {
 
 	world.addCell(c);
 }
+
+// var largest = this.cells[uids[0]];
+//
+// if(c.mass > largest.mass) {
+// 	largest = c;
+// }
+// if(!largest.dead && !largest.isControlled && largest.mass > Cell.PLAYER_START_MASS) {
+// 	largest.split();
+// }
