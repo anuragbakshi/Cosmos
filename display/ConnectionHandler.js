@@ -11,7 +11,7 @@ window.ConnectionHandler = function(world) {
 			var c = new Cell(
 				[random.randInt(100, world.width - 100), random.randInt(100, world.height - 100)],
 				[0, 0],
-				1000,
+				Cell.PLAYER_START_MASS,
 				argsObject.name,
 				argsObject.color,
 				true
@@ -25,6 +25,10 @@ window.ConnectionHandler = function(world) {
 		session.subscribe("cmd", function(eventArray, eventObject) {
 			world.handleMessage(eventObject);
 		});
+
+		world.onPlayerDie = function(uid) {
+			session.publish("cosmos.gameevents", [], { desc: "death", uid: uid });
+		};
 	};
 
 	this.connection.open();

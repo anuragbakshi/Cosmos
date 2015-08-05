@@ -1,8 +1,9 @@
-window.World = function(width, height, onPlayerUpdate) {
+window.World = function(width, height, onPlayerUpdate, onPlayerDie) {
 	this.width = width;
 	this.height = height;
 
 	this.onPlayerUpdate = onPlayerUpdate !== undefined ? onPlayerUpdate : function() {};
+	this.onPlayerDie = onPlayerDie !== undefined ? onPlayerDie : function() {};
 
 	this.cells = {};
 };
@@ -29,6 +30,7 @@ World.prototype.step = function(dt) {
 		if(this.cells[uids[i]].dead) {
 			if(this.cells[uids[i]].isControlled) {
 				playerUpdated = true;
+				onPlayerDie(uids[i]);
 			}
 
 			delete this.cells[uids[i]];

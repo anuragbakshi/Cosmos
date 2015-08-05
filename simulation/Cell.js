@@ -12,6 +12,7 @@ window.Cell = function(position, velocity, mass, name, color, isControlled) {
 	this.uid = Cell.uidCounter++;
 };
 
+Cell.PLAYER_START_MASS = 1000;
 Cell.EJECTION_VELOCITY = 0.075;
 Cell.uidCounter = 0;
 
