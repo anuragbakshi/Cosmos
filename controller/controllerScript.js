@@ -3,7 +3,7 @@
 //var UID_SIZE = Math.pow(10,6);
 
 var REFRESH = 100;
-var SENSITIVITY = .005;
+var SENSITIVITY = 1/100;
 var ANIMATION_DURATION = 500;
 
 // For hammer, if swiping is to be used.
@@ -30,26 +30,8 @@ con.onopen = function(ses,det){
 				strokeStyle: negateColor($('#color').val())
 			});
 
-			var pressed = false;
-
-			stk.addEventListener('touchStart',function(){
-				pressed = true;
-			});
-
-			stk.addEventListener('touchEnd',function(){
-				pressed = false;
-			});
-
-			stk.addEventListener('mouseUp',function(){
-				pressed = false;
-			});
-
-			stk.addEventListener('mouseDown',function(){
-				pressed = true;
-			});
-
 			setInterval(function(){
-				if(pressed){
+				if(stk.deltaX() != 0 || stk.deltaY() != 0){
 					impulse = vec2.scl([stk.deltaX(),stk.deltaY()],SENSITIVITY);
 					ses.publish('cmd',[],{
 						desc:'input',
@@ -107,7 +89,7 @@ con.onopen = function(ses,det){
 		var colorLeft = $("option[value='"+ $('#color').val() +"']").offset().left;
 		var colorTop = $("option[value='"+ $('#color').val() +"']").offset().top;
 
-		$('#ink ').show()
+		$('#ink ').removeClass('vanish').show()
 			.css('background-color',$('#color').val())
 			.css({
 				top: colorTop + 'px',
@@ -129,14 +111,16 @@ con.onopen = function(ses,det){
 
 
 	function resetScreen(){
-		$('#gesture').css('background-color','inherit');
-
 		$('#ink').removeClass('animate')
 			.addClass('vanish');
 
 		$('#intro').fadeIn(ANIMATION_DURATION);
 		$('#entry').fadeIn(ANIMATION_DURATION);
 		$('#obituary').text("Our condolensces. Press 'Go!' again to re-start!");
+
+		setTimeout(function(){
+			$('#gesture').css('background-color','transparent');
+		},ANIMATION_DURATION);
 
 		if(joystickMade) stk.destroy();
 		joystickMade = false;
