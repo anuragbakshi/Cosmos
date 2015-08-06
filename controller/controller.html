@@ -22,6 +22,7 @@
 		#gesture{
 			width: 100%;
 			height: 100%;
+			background-color: transparent;
 		}
 
 		#ink {
@@ -56,6 +57,7 @@
 		html{
 			width: 100%;
 			height: 100%;
+			user-select: none;
 		}
 
 		body{
@@ -92,14 +94,14 @@ Pick a color:
 <!--</form>-->
 </div>
 
-
-
 <div id="gesture">
 	<div id="intro" class="well">
 		<h2 class="text-muted">cosmos controller</h2>
 		<h6 class="text-muted" id="obituary">Please enter your name, select a color and click 'Go!'</h6>
 		<h6 class="text-muted">Once you're in, the screen will be your joystick. Tap and drag to move!</h6>
+		<h6 class="text-muted">WARNING: You may have to tap the cosmos icon a few times to get the joystick.</h6>
 	</div>
+	<img src="/lib/img/cosmos-logo-white.png" id="logo" width="136" height="115"></img>
 </div>
 <script src="/lib/js/virtualJoystick.js"></script>
 <script src="controllerScript.js"></script>

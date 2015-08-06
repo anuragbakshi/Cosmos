@@ -101,6 +101,7 @@ con.onopen = function(ses,det){
 
 		$('#intro').fadeOut(ANIMATION_DURATION/2);
 		$('#entry').fadeOut(ANIMATION_DURATION/2);
+		$('#logo').fadeOut(ANIMATION_DURATION/2);
 
 		setTimeout(function(){
 			resizeCanvas();
@@ -117,6 +118,7 @@ con.onopen = function(ses,det){
 		$('#intro').fadeIn(ANIMATION_DURATION);
 		$('#entry').fadeIn(ANIMATION_DURATION);
 		$('#obituary').text("Our condolensces. Press 'Go!' again to re-start!");
+		$('#logo').fadeIn(ANIMATION_DURATION);
 
 		setTimeout(function(){
 			$('#gesture').css('background-color','transparent');
