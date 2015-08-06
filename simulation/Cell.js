@@ -4,7 +4,8 @@ window.Cell = function(position, velocity, mass, name, color, isControlled) {
 	this.mass = mass;
 
 	this.name = name !== undefined ? name : "";
-	this.color = (0xff << 24) | parseInt((color !== undefined ? color : "#b0b070").substring(1), 16);
+	// this.color = (0xff << 24) | parseInt((color !== undefined ? color : Cell.DEFAULT_COLOR).substring(1), 16);	// rgb(182,200,239)
+	this.color = color !== undefined ? ((0xff << 24) | parseInt((color).substring(1), 16)) : Cell.DEFAULT_COLOR;	// rgb(182,200,239)
 
 	this.isControlled = isControlled !== undefined ? isControlled : false;
 
@@ -14,6 +15,8 @@ window.Cell = function(position, velocity, mass, name, color, isControlled) {
 
 Cell.PLAYER_START_MASS = 1000;
 Cell.EJECTION_VELOCITY = 0.075;
+Cell.DEFAULT_COLOR = 0xffb6c8ef;
+Cell.GLOW_RADIUS = 8;
 Cell.uidCounter = 0;
 
 Cell.prototype.update = function(width, height, dt) {
